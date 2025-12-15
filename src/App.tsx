@@ -1,5 +1,5 @@
 import './App.css'
-import WaitingScreen from "./screen/waiting/WaitingScreen.tsx";
+import Pokedesck from "./screen/pokedesk/Pokedesck.tsx";
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
     <>
         <h1>PokeCollector+</h1>
         <section className={"main-container"}>
-            <WaitingScreen />
+            <Pokedesck />
         </section>
     </>
   )
