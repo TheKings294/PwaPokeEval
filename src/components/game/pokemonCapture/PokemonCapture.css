@@ -21,6 +21,14 @@
     border-bottom: 4px solid var(--text);
 }
 
+.hud-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
 .monster-name {
     margin: 0;
     font-size: 1.6rem;

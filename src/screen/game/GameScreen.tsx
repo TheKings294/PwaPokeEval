@@ -1,24 +1,28 @@
 import "./GameScreen.css"
 import ShearchPokemon from "../../components/game/shearchPokemon/ShearchPokemon.tsx";
-import type {Content, PropsScreen} from "../../type/types.ts";
-import {useState} from "react";
+import type {Content, Pokemon, PropsScreen} from "../../type/types.ts";
+import {useEffect, useState} from "react";
 import * as React from "react";
 import PokemonCapture from "../../components/game/pokemonCapture/PokemonCapture.tsx";
 import {PokemonGame} from "../../utils/PokemonGame.ts";
 
 function GameScreen({ goTo }: PropsScreen) {
     const [content, setContent] = useState<Content>("search");
+    const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+
     const pokemonClass = new PokemonGame({
-        changeContent: setContent
+        changeContent: setContent,
+        setPokemon: setPokemon
     });
 
     const contentRef: Record<Content, React.ReactNode> = {
         search: <ShearchPokemon />,
-        game: <PokemonCapture />,
+        game: pokemon ? <PokemonCapture pokemon={pokemon} /> : <p>Loading Pokémon...</p>,
     }
 
-
-    pokemonClass.GameRun()
+    useEffect(() => {
+          pokemonClass.GameRun()
+    }, [content])
 
     return (
         <>

@@ -1,23 +1,34 @@
 import "./PokemonCapture.css"
+import type {Pokemon} from "../../../type/types.ts";
 
-function PokemonCapture () {
+type CaptureDTO = {
+    pokemon: Pokemon
+}
+
+function PokemonCapture({pokemon}: CaptureDTO) {
     return (
         <>
             <div className="monster-page">
                 <header className="monster-hud">
                     <div className="hud-left">
-                        <h1 className="monster-name">Charmander</h1>
-                        <span className="monster-type fire">Fire</span>
+                        <h1 className="monster-name">{ pokemon.name }</h1>
+                        {
+                            pokemon.type.map((t: {type: {name: string}}, index) => (
+                                <span className={`monster-type ${t.type.name}`} key={index}>
+                                    {t.type.name}
+                                </span>
+                            ))
+                        }
                     </div>
 
                     <div className="hud-right">
-                        <span className="monster-hp">❤️ 39 / 39</span>
+                        <span className="monster-hp">❤️ { pokemon.hp }</span>
                     </div>
                 </header>
 
                 <main className="monster-stage">
                     <img
-                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"
+                        src={ pokemon.sprite }
                         alt="Charmander"
                         className="monster-image"
                     />
