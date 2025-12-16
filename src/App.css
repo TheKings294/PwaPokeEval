@@ -18,25 +18,59 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.pokemon-btn {
+  font-family: 'Arial', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  padding: 14px 28px;
+  border-radius: 999px;
+
+  background: linear-gradient(
+          to bottom,
+          #ff1a1a 0%,
+          #ff1a1a 45%,
+          #ffffff 45%,
+          #ffffff 100%
+  );
+
+  border: 4px solid #000;
+  color: #000;
+  cursor: pointer;
+
+  box-shadow:
+          0 6px 0 #000,
+          0 8px 12px rgba(0, 0, 0, 0.3);
+
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Hover effect */
+.pokemon-btn:hover {
+  transform: translateY(2px);
+  box-shadow:
+          0 4px 0 #000,
+          0 6px 10px rgba(0, 0, 0, 0.3);
 }
 
-.card {
-  padding: 2em;
+/* Active (click) */
+.pokemon-btn:active {
+  transform: translateY(6px);
+  box-shadow:
+          0 0 0 #000,
+          0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.read-the-docs {
-  color: #888;
+.back-home-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+
+    padding: 8px 14px;
+    border-radius: 999px;
+
+    font-weight: 800;
+    cursor: pointer;
 }
