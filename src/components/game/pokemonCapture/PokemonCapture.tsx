@@ -3,9 +3,11 @@ import type {Pokemon} from "../../../type/types.ts";
 
 type CaptureDTO = {
     pokemon: Pokemon
+    capture: () => void
+    run: () => void
 }
 
-function PokemonCapture({pokemon}: CaptureDTO) {
+function PokemonCapture({pokemon, capture, run}: CaptureDTO) {
     return (
         <>
             <div className="monster-page">
@@ -35,8 +37,8 @@ function PokemonCapture({pokemon}: CaptureDTO) {
                 </main>
 
                 <footer className="monster-bottom">
-                    <button className="action-btn">Capture</button>
-                    <button className="action-btn">Run</button>
+                    <button className="action-btn" onClick={() => capture()}>Capture</button>
+                    <button className="action-btn" onClick={() => run()}>Run</button>
                 </footer>
             </div>
         </>

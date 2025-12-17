@@ -1,10 +1,11 @@
 import type {GameCaptureDTO} from "./DTO.ts";
 import type {Dispatch, SetStateAction} from "react";
-import type {Content, Pokemon, PokemonResponse} from "../type/types.ts";
+import type {Content, PokemonResponse, Pokemon} from "../type/types.ts";
 import axios from "axios";
 import type {AxiosInstance} from "axios";
 import type {PokedesckStorageType} from "../type/PokedeckStorageType.ts";
 import React from "react"
+import type {TeamStorageType} from "../type/TeamStorageType.ts";
 
 export class PokemonGame {
     private readonly changeContent: Dispatch<SetStateAction<Content>>;
@@ -18,6 +19,10 @@ export class PokemonGame {
     private setPokedeck: React.Dispatch<
         React.SetStateAction<PokedesckStorageType>
     >
+    private countLunch: number
+    private setCountLunch : React.Dispatch<React.SetStateAction<number>>
+    private PokemonTeam: TeamStorageType
+    private setPokemonTeam: React.Dispatch<React.SetStateAction<TeamStorageType>>
 
     constructor(
         game: GameCaptureDTO,
@@ -26,12 +31,13 @@ export class PokemonGame {
         this.setPokemon = game.setPokemon;
         //this.pokedeck = game.pokedeck;
         this.setPokedeck = game.setPokedeck;
+        this.countLunch = game.countLunch;
+        this.setCountLunch = game.setCountLunch;
+        this.PokemonTeam = game.team;
+        this.setPokemonTeam = game.setTeam
     }
 
     public GameRun(): void {
-        if (this.pokemon) {
-            return;
-        }
         this.OnePokemon()
             .then(() => {
                 this.updatePokedeck(this.pokemon)
@@ -40,7 +46,7 @@ export class PokemonGame {
                         this.setPokemon(this.pokemon);
                 })
             })
-        this.changeContent('game')
+        setInterval(() => this.changeContent('game'), this.getRandom(1, 10) * 1000)
     }
 
     private async OnePokemon (): Promise<void> {
@@ -80,6 +86,10 @@ export class PokemonGame {
         return Math.floor(Math.random() * 512) === 0;
     }
 
+    private isLucky(): boolean {
+        return Math.random() < 0.15
+    }
+
     private FormatedData(data: PokemonResponse): Pokemon {
         return {
             id: data.id,
@@ -99,5 +109,52 @@ export class PokemonGame {
                     : poke
             )
         )
+    }
+
+    private isPokemon(item: any): item is Pokemon {
+        return (
+            item !== null &&
+            typeof item === 'object' &&
+            'name' in item &&
+            'type' in item &&
+            'number' in item
+        );
+    }
+
+    public updateTeam(pokemon: Pokemon, remove ?: boolean, index ?: number): void {
+        if (remove && index) {
+            this.setPokemonTeam(prev => {
+                const newTeam = [...prev] as TeamStorageType;
+                newTeam[index] = pokemon;
+                return newTeam;
+            });
+        } else {
+            this.setPokemonTeam(prev => {
+                const newTeam = [...prev];
+                const index = newTeam.findIndex(p => p === null);
+                if (index !== -1) {
+                    newTeam[index] = pokemon;
+                }
+                return newTeam as TeamStorageType;
+            });
+        }
+    }
+
+    public capturePokemon(): boolean {
+        if (this.countLunch === 3) return false;
+
+        if (!this.isLucky()) {
+            this.setCountLunch(prev => prev + 1)
+            return false;
+        }
+
+        if (this.PokemonTeam.every(item => this.isPokemon(item))) {
+            this.setCountLunch(0)
+            return false;
+        }
+
+        this.updateTeam(this.pokemon);
+        this.setCountLunch(0)
+        return true;
     }
 }

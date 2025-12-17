@@ -9,7 +9,7 @@ function ShearchPokemon() {
                     <div className="handle"></div>
                 </div>
 
-                <p className="search-text">Searching for a monster...</p>
+                <p className="search-text">Searching for a pokemon...</p>
             </div>
         </>
     )
