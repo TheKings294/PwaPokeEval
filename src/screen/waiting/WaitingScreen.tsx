@@ -10,7 +10,6 @@ function WaitingScreen({ goTo }: PropsScreen) {
             <div className={"waiting-container"}>
                 <button className={"pokemon-btn"} onClick={() => goTo("game")}>Partir a la chasse</button>
                 <button className={"pokemon-btn"} onClick={() => goTo("pokedeck")}>Pokedesk</button>
-                <button className={"pokemon-btn"}>New Feature</button>
             </div>
         </>
     )

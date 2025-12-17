@@ -5,11 +5,9 @@ import type {TeamStorageType} from "../type/TeamStorageType.ts";
 
 export type GameCaptureDTO = {
     changeContent: Dispatch<SetStateAction<Content>>
-    setPokemon: Dispatch<SetStateAction<Pokemon | null>>
-    pokedeck: PokedesckStorageType,
+    setPokemon: Dispatch<SetStateAction<Pokemon | undefined>>
     setPokedeck: Dispatch<SetStateAction<PokedesckStorageType>>
-    countLunch: number
     setCountLunch : React.Dispatch<React.SetStateAction<number>>
-    team: TeamStorageType,
     setTeam: Dispatch<SetStateAction<TeamStorageType>>
+    openModal: (status: boolean) => void
 }

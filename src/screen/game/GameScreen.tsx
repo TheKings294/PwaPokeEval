@@ -9,33 +9,35 @@ import {useLocalStorage} from "../../hooks/useLocalStorage.tsx";
 import {PokedesckDefaultValue, type PokedesckStorageType} from "../../type/PokedeckStorageType.ts";
 import {DefaultTeamStorage, type TeamStorageType} from "../../type/TeamStorageType.ts";
 import Toast from "../../components/Toast.tsx";
+import Modal from "../../components/Modal.tsx";
+import PokemonList from "../../components/team/PokemonList.tsx";
+import {requestPermission} from "../../utils/Notification.ts";
 
 function GameScreen({ goTo }: PropsScreen) {
     const [content, setContent] = useState<Content>("search");
-    const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+    const [pokemon, setPokemon] = useState<Pokemon | undefined>(undefined);
     const [lunch, setLunch] = useState<number>(0);
     const pokemonClassRef = useRef<PokemonGame | null>(null);
-    const [pokedeck, setPokedeck] = useLocalStorage<PokedesckStorageType>('pokedesk', PokedesckDefaultValue)
+    const [, setPokedeck] = useLocalStorage<PokedesckStorageType>('pokedesk', PokedesckDefaultValue)
     const [team, setTeam] = useLocalStorage<TeamStorageType>("team", DefaultTeamStorage);
     const [message, setMessage] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         pokemonClassRef.current = new PokemonGame({
             changeContent: setContent,
             setPokemon: setPokemon,
-            pokedeck: pokedeck,
             setPokedeck: setPokedeck,
-            countLunch: lunch,
             setCountLunch: setLunch,
-            team: team,
             setTeam: setTeam,
+            openModal: setIsModalOpen
         });
 
         pokemonClassRef.current.GameRun();
     }, []);
 
-    function capture() {
-        const result = pokemonClassRef.current?.capturePokemon()
+    async function capture() {
+        const result = pokemonClassRef.current?.capturePokemon(lunch, team)
 
         if (!result && lunch >= 3) {
             setContent("search");
@@ -50,6 +52,20 @@ function GameScreen({ goTo }: PropsScreen) {
 
         if (result) {
             setMessage("Pokemon Capturé")
+            if (Notification.permission === "granted") {
+                new Notification("Nouvelle capture", {
+                    body: "Vous avez attrapé un pokemon",
+                    icon: "/icon/144.png",
+                    badge: "/icon/144.png"
+                })
+            } else if (Notification.permission !== "denied") {
+                const granted = await requestPermission();
+                if (granted) new Notification("Nouvelle capture", {
+                    body: "Vous avez attrapé un pokemon",
+                    icon: "/icon/144.png",
+                    badge: "/icon/144.png"
+                });
+            }
             setTimeout(() => setMessage(""), 3000);
             setLunch(0)
             setContent("search");
@@ -72,6 +88,15 @@ function GameScreen({ goTo }: PropsScreen) {
         <>
             <button className={"pokemon-btn back-home-btn"} onClick={() => goTo("home")}>Home</button>
             {message && <Toast message={message} />}
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
+                   children={<PokemonList
+                       pokemons={team}
+                       onDelete={(pokemonItem, remove, index) => {
+                           pokemonClassRef.current?.updateTeam(pokemonItem, remove, index)
+                           setIsModalOpen(false);
+                       }}
+                       pokemonReplacement={pokemon} />}
+            />
             {
                 contentRef[content]
             }

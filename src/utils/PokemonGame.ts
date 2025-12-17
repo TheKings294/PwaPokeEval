@@ -9,32 +9,28 @@ import type {TeamStorageType} from "../type/TeamStorageType.ts";
 
 export class PokemonGame {
     private readonly changeContent: Dispatch<SetStateAction<Content>>;
-    private readonly setPokemon!: Dispatch<SetStateAction<Pokemon | null>>; // new
+    private readonly setPokemon!: Dispatch<SetStateAction<Pokemon | undefined>>; // new
     private pokemon !: Pokemon;
     private axiosI : AxiosInstance = axios.create({
         baseURL: "https://pokeapi.co/api/v2",
         timeout: 5000,
     })
-    //private pokedeck: PokedesckStorageType;
     private setPokedeck: React.Dispatch<
         React.SetStateAction<PokedesckStorageType>
     >
-    private countLunch: number
     private setCountLunch : React.Dispatch<React.SetStateAction<number>>
-    private PokemonTeam: TeamStorageType
     private setPokemonTeam: React.Dispatch<React.SetStateAction<TeamStorageType>>
+    private openModal: (status: boolean) => void
 
     constructor(
         game: GameCaptureDTO,
     ) {
         this.changeContent = game.changeContent;
         this.setPokemon = game.setPokemon;
-        //this.pokedeck = game.pokedeck;
         this.setPokedeck = game.setPokedeck;
-        this.countLunch = game.countLunch;
         this.setCountLunch = game.setCountLunch;
-        this.PokemonTeam = game.team;
         this.setPokemonTeam = game.setTeam
+        this.openModal = game.openModal;
     }
 
     public GameRun(): void {
@@ -78,12 +74,20 @@ export class PokemonGame {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    public getPokemon() : object {
+    public getPokemon() : Pokemon {
         return this.pokemon;
     }
 
     private isShinny(): boolean {
-        return Math.floor(Math.random() * 512) === 0;
+        const shinny = Math.floor(Math.random() * 512) === 0;
+        if (shinny && Notification.permission === "granted") {
+            new Notification("Attention un shinny", {
+                body: "Vous avez un shinny a capturé",
+                icon: "/icon/144.png",
+                badge: "/icon/144.png"
+            })
+        }
+        return shinny
     }
 
     private isLucky(): boolean {
@@ -117,15 +121,21 @@ export class PokemonGame {
             typeof item === 'object' &&
             'name' in item &&
             'type' in item &&
-            'number' in item
+            'id' in item &&
+            'hp' in item &&
+            'cries' in item &&
+            'sprite' in item
         );
     }
 
     public updateTeam(pokemon: Pokemon, remove ?: boolean, index ?: number): void {
         if (remove && index) {
+            console.log(index, pokemon.id);
             this.setPokemonTeam(prev => {
-                const newTeam = [...prev] as TeamStorageType;
-                newTeam[index] = pokemon;
+                if (index < 0 || index > 5) return prev;
+                const newTeam: TeamStorageType = prev.map(p =>
+                    p && p.id === pokemon.id ? pokemon : p
+                ) as TeamStorageType;
                 return newTeam;
             });
         } else {
@@ -140,19 +150,27 @@ export class PokemonGame {
         }
     }
 
-    public capturePokemon(): boolean {
-        if (this.countLunch === 3) return false;
+    public capturePokemon(count: number, pokemonTeam: TeamStorageType): boolean {
+        console.log("Here")
+        if (count === 3) return false;
 
         if (!this.isLucky()) {
+            console.log("not lucky")
             this.setCountLunch(prev => prev + 1)
             return false;
         }
 
-        if (this.PokemonTeam.every(item => this.isPokemon(item))) {
+        console.log(pokemonTeam.every(item => this.isPokemon(item)))
+        console.log(pokemonTeam)
+
+        if (pokemonTeam.every(item => this.isPokemon(item))) {
+            console.log("Team full")
             this.setCountLunch(0)
-            return false;
+            this.openModal(true)
+            return true;
         }
 
+        console.log("classic")
         this.updateTeam(this.pokemon);
         this.setCountLunch(0)
         return true;
