@@ -5,7 +5,6 @@ import {useState} from "react";
 import WaitingScreen from "./screen/waiting/WaitingScreen.tsx";
 import Pokedesck from "./screen/pokedesk/Pokedesck.tsx";
 import * as React from "react";
-import {Notifications} from "react-push-notification";
 import {requestPermission} from "./utils/Notification.ts";
 
 function App() {
@@ -22,7 +21,6 @@ function App() {
 
     return (
         <>
-            <Notifications />
             {
                 page !== "game" ?
                 <h1>PokeCollector+</h1>
