@@ -1,0 +1,120 @@
+/* Page */
+.monster-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    background: var(--bg);
+    color: var(--text);
+
+    font-family: Arial, sans-serif;
+}
+
+/* Top HUD */
+.monster-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 20px;
+    background: var(--bg);
+    border-bottom: 4px solid var(--text);
+}
+
+.hud-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.monster-name {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-transform: capitalize;
+}
+
+/* Type badge */
+.monster-type {
+    margin-top: 6px;
+    display: inline-block;
+
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 2px solid var(--text);
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* HP */
+.monster-hp {
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+/* Center stage */
+.monster-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.monster-image {
+    width: 50%;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+/* Bottom slot */
+.monster-bottom {
+    padding: 20px;
+    background: var(--bg);
+    border-top: 4px solid var(--text);
+
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Buttons */
+.action-btn {
+    padding: 12px 24px;
+    border-radius: 999px;
+
+    border: 3px solid var(--text);
+    background: var(--bg);
+    color: var(--text);
+
+    font-weight: 800;
+    cursor: pointer;
+
+    box-shadow: 0 5px 0 var(--text);
+}
+
+.action-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 var(--text);
+}
+
+/* Pokémon types (unchanged) */
+.fire { background: #f08030; }
+.water { background: #6890f0; }
+.grass { background: #78c850; }
+.electric { background: #f8d030; color: #000; }
+
+/* Mobile */
+@media (max-width: 480px) {
+    .monster-image {
+        width: 180px;
+        height: 180px;
+    }
+
+    .monster-name {
+        font-size: 1.3rem;
+    }
+}
